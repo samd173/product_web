@@ -34,7 +34,7 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/auth/login", {
+      const res = await fetch("https://backend-project-sa6b.onrender.com/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
