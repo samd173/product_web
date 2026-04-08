@@ -8,6 +8,9 @@ function Navbar() {
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // 🔥 NEW (Cart badge)
+  const [cartCount, setCartCount] = useState(0);
+
   const navigate = useNavigate();
 
   // 🔥 LOAD PRODUCTS (UNCHANGED)
@@ -16,6 +19,20 @@ function Navbar() {
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(() => {});
+  }, []);
+
+  // 🔥 NEW (Cart count update)
+  useEffect(() => {
+    const updateCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+      setCartCount(totalQty);
+    };
+
+    updateCount();
+    window.addEventListener("storage", updateCount);
+
+    return () => window.removeEventListener("storage", updateCount);
   }, []);
 
   // 🔍 FILTER SUGGESTIONS (UNCHANGED)
@@ -120,15 +137,27 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/home">Home</Link>
             </li>
+
             <li className="nav-item">
               <Link className="nav-link" to="/crops">Crops</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/cart">Cart 🛒</Link>
+
+            {/* 🛒 CART WITH BADGE */}
+            <li className="nav-item position-relative">
+              <Link className="nav-link" to="/cart">
+                Cart 🛒
+                {cartCount > 0 && (
+                  <span className="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </li>
+
             <li className="nav-item">
               <Link className="nav-link" to="/corders">Orders 📦</Link>
             </li>
+
             <li className="nav-item">
               <Link className="nav-link" to="/profile">Profile 👤</Link>
             </li>

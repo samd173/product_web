@@ -269,12 +269,14 @@ function Home() {
       <style>{`
         .toast-msg {
           position: fixed;
-          top: 70px;
-          right: 10px;
+          top: 80px;
+          right: 15px;
           background: #198754;
           color: white;
-          padding: 10px 15px;
-          border-radius: 6px;
+          padding: 12px 16px;
+          border-radius: 8px;
+          z-index: 9999;
+          box-shadow: 0 5px 15px rgba(0,0,0,0,3);
           font-size: 14px;
         }
       `}</style>
