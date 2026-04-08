@@ -41,7 +41,6 @@ function Home() {
       if (cart[index].qty <= 0) cart.splice(index, 1);
     } else if (change > 0) {
       cart.push({ ...product, qty: 1 });
-
       setToast("Added to cart ✅");
       setTimeout(() => setToast(""), 2000);
     }
@@ -57,18 +56,29 @@ function Home() {
   };
 
   return (
-    <div className="container mt-5 pt-4">
+    <div className="container py-3">
 
       {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      {/* 🔥 SLIDER (UNCHANGED) */}
-      <div style={{ overflow: "hidden", height: "320px", borderRadius: "12px" }}>
+      {/* 🔥 SLIDER */}
+      <div className="rounded overflow-hidden mb-4 shadow-sm position-relative" style={{ height: "220px" }}>
         <div
           style={{
             display: "flex",
             transform: `translateX(-${current * 100}%)`,
-            transition: "transform 1s ease-in-out"
+            transition: "transform 0.8s ease-in-out"
+          }}
+          onTouchStart={(e) => (window.startX = e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            let endX = e.changedTouches[0].clientX;
+            if (window.startX - endX > 50) {
+              setCurrent((prev) => (prev + 1) % images.length);
+            } else if (endX - window.startX > 50) {
+              setCurrent((prev) =>
+                prev === 0 ? images.length - 1 : prev - 1
+              );
+            }
           }}
         >
           {images.map((img, i) => (
@@ -76,77 +86,100 @@ function Home() {
               <img
                 src={img}
                 alt=""
-                style={{ width: "100%", height: "320px", objectFit: "cover" }}
+                className="img-fluid w-100"
+                style={{ height: "220px", objectFit: "cover" }}
               />
             </div>
           ))}
         </div>
+
+        {/* Buttons */}
+        <button className="btn btn-dark position-absolute top-50 start-0 translate-middle-y"
+          style={{ opacity: 0.6 }}
+          onClick={() => setCurrent(current === 0 ? images.length - 1 : current - 1)}>
+          ‹
+        </button>
+
+        <button className="btn btn-dark position-absolute top-50 end-0 translate-middle-y"
+          style={{ opacity: 0.6 }}
+          onClick={() => setCurrent((current + 1) % images.length)}>
+          ›
+        </button>
+
+        {/* Dots */}
+        <div className="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-2">
+          {images.map((_, i) => (
+            <span
+              key={i}
+              onClick={() => setCurrent(i)}
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: current === i ? "white" : "gray",
+                cursor: "pointer"
+              }}
+            ></span>
+          ))}
+        </div>
       </div>
 
-      {/* 🛒 CATEGORIES (UNCHANGED) */}
-      <h3 className="mt-5 mb-3">🛒 Categories</h3>
-      <div className="d-flex gap-4 overflow-auto pb-2">
+      {/* 🛒 CATEGORIES */}
+      <h5 className="mb-3">🛒 Categories</h5>
+      <div className="d-flex gap-3 overflow-auto pb-2">
         {["Vegetables", "Fruits", "Grains", "Roots"].map((cat, i) => (
-          <div
-            key={i}
-            onClick={() => navigate(`/crops?category=${cat}`)}
-            style={{ minWidth: "90px", textAlign: "center", cursor: "pointer" }}
-          >
-            <div
-              className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-              style={{ width: "65px", height: "65px", margin: "auto" }}
-            >
+          <div key={i} className="text-center"
+            style={{ minWidth: "80px", cursor: "pointer" }}
+            onClick={() => navigate(`/crops?category=${cat}`)}>
+            <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+              style={{ width: "60px", height: "60px" }}>
               {cat === "Vegetables" && "🥬"}
               {cat === "Fruits" && "🍎"}
               {cat === "Grains" && "🌾"}
               {cat === "Roots" && "🥔"}
             </div>
-            <small className="fw-semibold mt-2 d-block">{cat}</small>
+            <small className="fw-semibold d-block mt-1">{cat}</small>
           </div>
         ))}
       </div>
 
-      {/* 🔥 PRODUCTS */}
-      {[{
-        title: "🔥 Featured Products",
-        data: products.slice(0, 4)
-      },
-      {
-        title: "🌱 Recently Added",
-        data: products.slice(-4)
-      }].map((section, idx) => (
-        <div key={idx}>
-          <div className="d-flex justify-content-between align-items-center mt-5">
-            <h3>{section.title}</h3>
-            <button className="btn btn-outline-success" onClick={() => navigate("/crops")}>
+      {/* 🔥 PRODUCTS SECTIONS */}
+      {[
+        { title: "🔥 Featured Products", data: products.slice(0, 4) },
+        { title: "🌱 Recently Added", data: products.slice(4, 8) }
+      ].map((section, idx) => (
+        <div key={idx} className="bg-white p-3 rounded shadow-sm mt-4">
+
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h6 className="fw-bold m-0">{section.title}</h6>
+            <button className="btn btn-sm btn-outline-success"
+              onClick={() => navigate("/crops")}>
               View All →
             </button>
           </div>
 
-          <div className="row g-4">
+          <div className="row g-3">
             {section.data.map((p) => {
               const cart = JSON.parse(localStorage.getItem("cart")) || [];
               const item = cart.find((i) => i.id === p.id);
               const qty = item ? item.qty : 0;
 
               return (
-                <div className="col-md-3 col-6" key={p.id}>
-                  <div className="product-card">
+                <div className="col-6 col-md-3" key={p.id}>
+                  <div className="card h-100 border-0 shadow-sm">
 
-                    {/* IMAGE */}
-                    <div className="img-box">
-                      <img src={p.image} alt="" />
-                    </div>
+                    <img src={p.image} className="card-img-top"
+                      style={{ height: "140px", objectFit: "cover" }} />
 
-                    <div className="p-2">
+                    <div className="card-body p-2">
 
                       <small className="text-muted">{p.category}</small>
 
-                      <h6 className="product-title">{p.name}</h6>
+                      <h6 className="fw-semibold small">{p.name}</h6>
 
-                      <div className="price">
+                      <div className="text-success fw-bold">
                         ₹{p.price}
-                        <span className="unit">/{p.unit}</span>
+                        <small className="text-muted">/{p.unit}</small>
                       </div>
 
                       <small className="text-success">
@@ -156,11 +189,9 @@ function Home() {
                       <div className="mt-2">
 
                         {qty === 0 ? (
-                          <button
-                            className="btn btn-warning w-100"
-                            onClick={() => updateCart(p, 1)}
-                          >
-                            Add to Cart
+                          <button className="btn btn-warning w-100 btn-sm"
+                            onClick={() => updateCart(p, 1)}>
+                            Add
                           </button>
                         ) : (
                           <div className="d-flex justify-content-between">
@@ -170,13 +201,6 @@ function Home() {
                           </div>
                         )}
 
-                        <button
-                          className="btn btn-dark w-100 mt-2"
-                          onClick={() => buyNow(p)}
-                        >
-                          Buy Now
-                        </button>
-
                       </div>
 
                     </div>
@@ -185,82 +209,61 @@ function Home() {
               );
             })}
           </div>
+
         </div>
       ))}
 
-      {/* ⭐ SERVICES (UNCHANGED) */}
-      <div className="row text-center mt-5">
-        <div className="col-md-4">
-          <div className="card p-4 shadow-sm">
-            <h5>🚚 Fast Delivery</h5>
-            <p>Quick delivery at your doorstep</p>
+      {/* 🔥 TOAST STYLE */}
+      <style>{`
+        .toast-msg {
+          position: fixed;
+          top: 70px;
+          right: 10px;
+          background: #198754;
+          color: white;
+          padding: 10px 15px;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+      `}</style>
+
+    
+  
+      {/* ⭐ SERVICES */}
+      <div className="row mt-4 text-center">
+        <div className="col-12 col-md-4 mb-3">
+          <div className="card p-3 shadow-sm">
+            <h6>🚚 Fast Delivery</h6>
+            <small>Quick delivery at your doorstep</small>
           </div>
         </div>
 
-        <div className="col-md-4">
-          <div className="card p-4 shadow-sm">
-            <h5>🥬 Fresh Quality</h5>
-            <p>Direct from farmers</p>
+        <div className="col-12 col-md-4 mb-3">
+          <div className="card p-3 shadow-sm">
+            <h6>🥬 Fresh Quality</h6>
+            <small>Direct from farmers</small>
           </div>
         </div>
 
-        <div className="col-md-4">
-          <div className="card p-4 shadow-sm">
-            <h5>💰 Best Price</h5>
-            <p>Affordable pricing</p>
+        <div className="col-12 col-md-4 mb-3">
+          <div className="card p-3 shadow-sm">
+            <h6>💰 Best Price</h6>
+            <small>Affordable pricing</small>
           </div>
         </div>
       </div>
 
-      {/* 🔥 STYLES */}
+      {/* 🔥 TOAST STYLE */}
       <style>{`
-        .product-card {
-          border-radius: 10px;
-          background: white;
-          transition: 0.3s;
-          overflow: hidden;
-        }
-
-        .product-card:hover {
-          transform: scale(1.05);
-          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .img-box {
-          height: 150px;
-        }
-
-        .img-box img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .product-title {
-          font-size: 14px;
-          font-weight: 600;
-          height: 35px;
-          overflow: hidden;
-        }
-
-        .price {
-          font-weight: bold;
-          color: #198754;
-        }
-
-        .unit {
-          font-size: 12px;
-          color: gray;
-        }
-
         .toast-msg {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 70px;
+          right: 10px;
           background: #198754;
           color: white;
-          padding: 12px 18px;
-          border-radius: 8px;
+          padding: 10px 15px;
+          border-radius: 6px;
+          font-size: 14px;
         }
       `}</style>
 

@@ -42,3 +42,8 @@
     text-align: center;
   }
 }
+
+.search-box input {
+  border-radius: 25px;
+  padding: 10px;
+}
