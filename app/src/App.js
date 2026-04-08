@@ -39,18 +39,51 @@ function Layout() {
 
       <Routes>
 
-        {/* 🔁 DEFAULT REDIRECT */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* 🔁 DEFAULT REDIRECT (FIXED) */}
+        <Route path="/" element={<Navigate to="/home" />} />
 
-        {/* 👤 USER ROUTES */}
+        {/* 👤 USER ROUTES (PUBLIC) */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/crops" element={<Crops />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/corders" element={<COrders />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/checkout" element={<Checkout />} />
+
+        {/* 🔒 PROTECTED USER ROUTES */}
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/corders"
+          element={
+            <ProtectedRoute>
+              <COrders />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 👑 ADMIN LOGIN */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -84,7 +117,10 @@ function Layout() {
         />
 
         {/* ❌ INVALID ROUTE */}
-        <Route path="*" element={<h2 className="text-center mt-5">Page Not Found ❌</h2>} />
+        <Route
+          path="*"
+          element={<h2 className="text-center mt-5">Page Not Found ❌</h2>}
+        />
 
       </Routes>
 

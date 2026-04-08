@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+
 
 function COrders() {
   const [orders, setOrders] = useState([]);
@@ -58,7 +58,7 @@ function COrders() {
   if (loading) {
     return (
       <>
-        <Navbar />
+        
         <h3 className="text-center mt-5">Loading orders...</h3>
       </>
     );
@@ -66,89 +66,116 @@ function COrders() {
 
   return (
     <>
-      <Navbar />
+      
 
       <div className="container mt-5 pt-4">
 
-        <h2 className="mb-4 text-center">📦 My Orders</h2>
+        <h3 className="fw-bold text-center mb-4">📦 My Orders</h3>
 
         {orders.length === 0 ? (
           <p className="text-center text-muted mt-5">No orders yet</p>
         ) : (
           orders.map((order) => (
-            <div key={order.id} className="order-card">
+            <div key={order.id} className="card mb-4 shadow-sm border-0">
 
-              {/* HEADER */}
-              <div className="order-header">
-                <div>
-                  <h6>Order #{order.id}</h6>
-                  <small className="text-muted">
-                    {new Date(order.id).toLocaleString()}
-                  </small>
-                </div>
+              <div className="card-body">
 
-                <span className={getStatusClass(order.status)}>
-                  {order.status}
-                </span>
-              </div>
-
-              {/* ITEMS */}
-              {order.items.map((item, i) => (
-                <div key={i} className="order-item">
-
-                  <div className="d-flex align-items-center">
-                    <img
-                      src={item.image || "https://via.placeholder.com/60"}
-                      alt=""
-                    />
-
-                    <div>
-                      <h6 className="mb-0">{item.name}</h6>
-                      <small>Qty: {item.qty}</small>
-                    </div>
+                {/* HEADER */}
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h6 className="mb-0">Order #{order.id}</h6>
+                    <small className="text-muted">
+                      {new Date(order.id).toLocaleString()}
+                    </small>
                   </div>
 
-                  <span>₹{item.price * item.qty}</span>
-
+                  <span className={getStatusClass(order.status)}>
+                    {order.status}
+                  </span>
                 </div>
-              ))}
 
-              {/* TRACK */}
-              <div className="track-box">
-                {["Placed", "Processing", "Out for Delivery", "Delivered"].map((step, index) => (
-                  <div key={index} className="step">
-                    <div
-                      className="dot"
-                      style={{
-                        background:
-                          getStep(order.status) > index ? "#198754" : "#ccc"
-                      }}
-                    ></div>
-                    <small>{step}</small>
+                {/* ITEMS */}
+                {order.items.map((item, i) => (
+                  <div
+                    key={i}
+                    className="d-flex justify-content-between align-items-center border-bottom py-2"
+                  >
+
+                    <div className="d-flex align-items-center">
+
+                      <img
+                        src={item.image || "https://via.placeholder.com/60"}
+                        alt=""
+                        style={{
+                          width: "65px",
+                          height: "65px",
+                          borderRadius: "8px",
+                          objectFit: "cover"
+                        }}
+                      />
+
+                      <div className="ms-3">
+                        <h6 className="mb-0">{item.name}</h6>
+                        <small className="text-muted">
+                          Qty: {item.qty}
+                        </small>
+                      </div>
+
+                    </div>
+
+                    <strong className="text-success">
+                      ₹{item.price * item.qty}
+                    </strong>
+
                   </div>
                 ))}
-              </div>
 
-              {/* INFO */}
-              <div className="order-info">
-                <p>🚚 {order.eta || "30 mins"}</p>
+                {/* 🔥 TRACKING BAR */}
+                <div className="position-relative mt-4 mb-3">
 
-                <p>
-                  💳{" "}
-                  <span className={`badge ${
-                    order.paymentMethod === "Razorpay"
-                      ? "bg-primary"
-                      : "bg-success"
-                  }`}>
-                    {order.paymentMethod || "COD"}
+                  <div className="progress" style={{ height: "6px" }}>
+                    <div
+                      className="progress-bar bg-success"
+                      style={{
+                        width: `${(getStep(order.status) - 1) * 33}%`
+                      }}
+                    ></div>
+                  </div>
+
+                  <div className="d-flex justify-content-between mt-2">
+                    {["Placed", "Processing", "Out", "Delivered"].map((s, i) => (
+                      <small key={i} className={
+                        getStep(order.status) > i ? "text-success fw-bold" : "text-muted"
+                      }>
+                        {s}
+                      </small>
+                    ))}
+                  </div>
+
+                </div>
+
+                {/* INFO */}
+                <div className="d-flex justify-content-between text-muted small">
+                  <span>🚚 ETA: {order.eta || "30 mins"}</span>
+
+                  <span>
+                    💳{" "}
+                    <span className={`badge ${
+                      order.paymentMethod === "Razorpay"
+                        ? "bg-primary"
+                        : "bg-success"
+                    }`}>
+                      {order.paymentMethod || "COD"}
+                    </span>
                   </span>
-                </p>
-              </div>
+                </div>
 
-              {/* TOTAL */}
-              <div className="order-total">
-                <span>Total</span>
-                <strong>₹{order.total}</strong>
+                {/* TOTAL */}
+                <div className="d-flex justify-content-between mt-3 fw-bold fs-5">
+                  <span>Total</span>
+                  <span className="text-success">₹{order.total}</span>
+                </div>
+
               </div>
 
             </div>
@@ -156,73 +183,6 @@ function COrders() {
         )}
 
       </div>
-
-      {/* 🔥 STYLES */}
-      <style>{`
-        .order-card {
-          background: white;
-          border-radius: 12px;
-          padding: 15px;
-          margin-bottom: 15px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .order-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
-        }
-
-        .order-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin: 10px 0;
-        }
-
-        .order-item img {
-          width: 60px;
-          height: 60px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-right: 10px;
-        }
-
-        .track-box {
-          display: flex;
-          justify-content: space-between;
-          margin: 15px 0;
-        }
-
-        .step {
-          text-align: center;
-          flex: 1;
-        }
-
-        .dot {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          margin: auto;
-          margin-bottom: 5px;
-        }
-
-        .order-info {
-          display: flex;
-          justify-content: space-between;
-          font-size: 14px;
-          color: gray;
-        }
-
-        .order-total {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
-          font-size: 16px;
-        }
-      `}</style>
-
     </>
   );
 }

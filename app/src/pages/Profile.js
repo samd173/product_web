@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 function Profile() {
   const [user, setUser] = useState(null);
   const [editing, setEditing] = useState(false);
   const [toast, setToast] = useState("");
 
-  // 🔥 LOAD USER
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("customer"));
 
@@ -29,12 +27,10 @@ function Profile() {
       });
   }, []);
 
-  // 🔄 INPUT
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  // 📷 IMAGE
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -47,7 +43,6 @@ function Profile() {
     reader.readAsDataURL(file);
   };
 
-  // 💾 SAVE
   const handleSave = async () => {
     try {
       const res = await fetch(`https://backend-project-sa6b.onrender.com/user/${user.id}`, {
@@ -91,26 +86,24 @@ function Profile() {
 
   return (
     <>
-      <Navbar />
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
       <div className="container mt-5 pt-4">
 
-        <div className="profile-card">
+        <div className="card shadow-lg border-0 p-4 mx-auto" style={{ maxWidth: "550px" }}>
 
           {/* HEADER */}
-          <div className="profile-header">
+          <div className="text-center mb-3">
             <img
               src={user.image || "https://via.placeholder.com/120"}
               alt="profile"
+              className="rounded-circle shadow"
+              style={{ width: "100px", height: "100px", objectFit: "cover" }}
             />
 
-            <div>
-              <h4>{user.name}</h4>
-              <p>{user.email}</p>
-            </div>
+            <h4 className="mt-2 mb-0">{user.name}</h4>
+            <small className="text-muted">{user.email}</small>
           </div>
 
           {/* IMAGE UPLOAD */}
@@ -123,9 +116,9 @@ function Profile() {
           )}
 
           {/* FORM */}
-          <div className="profile-form">
+          <div>
 
-            <label>Name</label>
+            <label className="form-label">Name</label>
             <input
               className="form-control mb-2"
               name="name"
@@ -134,7 +127,7 @@ function Profile() {
               onChange={handleChange}
             />
 
-            <label>Phone</label>
+            <label className="form-label">Phone</label>
             <input
               className="form-control mb-2"
               name="phone"
@@ -143,7 +136,7 @@ function Profile() {
               onChange={handleChange}
             />
 
-            <label>Address</label>
+            <label className="form-label">Address</label>
             <textarea
               className="form-control mb-3"
               name="address"
@@ -157,14 +150,14 @@ function Profile() {
           {/* BUTTON */}
           {!editing ? (
             <button
-              className="btn btn-success w-100"
+              className="btn btn-success w-100 mt-2 fw-bold"
               onClick={() => setEditing(true)}
             >
               ✏️ Edit Profile
             </button>
           ) : (
             <button
-              className="btn btn-primary w-100"
+              className="btn btn-primary w-100 mt-2 fw-bold"
               onClick={handleSave}
             >
               💾 Save Changes
@@ -175,46 +168,18 @@ function Profile() {
 
       </div>
 
-      <Footer />
+     
 
-      {/* 🔥 STYLES */}
       <style>{`
-        .profile-card {
-          max-width: 500px;
-          margin: auto;
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .profile-header {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          margin-bottom: 15px;
-        }
-
-        .profile-header img {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        .profile-form label {
-          font-size: 13px;
-          color: gray;
-        }
-
         .toast-msg {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 80px;
+          right: 15px;
           background: #198754;
           color: white;
           padding: 12px 18px;
           border-radius: 8px;
+          z-index: 9999;
         }
       `}</style>
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 
 function Cart() {
   const [cart, setCart] = useState([]);
@@ -81,7 +80,7 @@ function Cart() {
 
   return (
     <>
-      <Navbar />
+      
 
       {toast && <div className="toast-msg">{toast}</div>}
 

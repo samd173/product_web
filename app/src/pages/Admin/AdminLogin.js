@@ -10,19 +10,17 @@ function AdminLogin() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState(""); // 🔥 NEW
+  const [toast, setToast] = useState("");
 
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(""), 2000);
   };
 
-  // 🔄 HANDLE INPUT
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔐 HANDLE LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,7 +46,6 @@ function AdminLogin() {
         throw new Error(data.error || "Login failed ❌");
       }
 
-      // 🔥 ADMIN ONLY ACCESS
       if (data.role !== "ADMIN") {
         showToast("Access denied ❌ Not an admin");
         setLoading(false);
@@ -84,41 +81,52 @@ function AdminLogin() {
       {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      <div className="card login-card p-4">
+      <div className="login-wrapper">
 
-        <h3 className="text-center mb-3 fw-bold text-danger">
-          🛠 Admin Panel
-        </h3>
+        {/* LEFT SIDE (NEW UI) */}
+        <div className="login-info">
+          <h2>AgroMart Admin</h2>
+          <p>Manage products, orders & analytics in one place.</p>
+        </div>
 
-        <p className="text-center text-muted mb-3">
-          Secure access only
-        </p>
+        {/* RIGHT SIDE */}
+        <div className="card login-card p-4">
 
-        <form onSubmit={handleSubmit}>
+          <h3 className="text-center mb-3 fw-bold text-danger">
+            🛠 Admin Panel
+          </h3>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Admin Email"
-            className="form-control mb-3 input-modern"
-            value={form.email}
-            onChange={handleChange}
-          />
+          <p className="text-center text-muted mb-3">
+            Secure access only
+          </p>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="form-control mb-3 input-modern"
-            value={form.password}
-            onChange={handleChange}
-          />
+          <form onSubmit={handleSubmit}>
 
-          <button className="btn btn-danger w-100 login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            <input
+              type="email"
+              name="email"
+              placeholder="Admin Email"
+              className="form-control mb-3 input-modern"
+              value={form.email}
+              onChange={handleChange}
+            />
 
-        </form>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="form-control mb-3 input-modern"
+              value={form.password}
+              onChange={handleChange}
+            />
+
+            <button className="btn btn-danger w-100 login-btn" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </button>
+
+          </form>
+
+        </div>
 
       </div>
 
@@ -128,13 +136,34 @@ function AdminLogin() {
           background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
         }
 
-        .login-card {
-          width: 360px;
-          border-radius: 16px;
-          backdrop-filter: blur(12px);
+        .login-wrapper {
+          display: flex;
           background: rgba(255,255,255,0.05);
+          border-radius: 20px;
+          overflow: hidden;
+          backdrop-filter: blur(10px);
           box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-          border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .login-info {
+          background: linear-gradient(135deg, #198754, #20c997);
+          color: white;
+          padding: 40px;
+          width: 250px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .login-info h2 {
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+
+        .login-card {
+          width: 320px;
+          border: none;
+          background: transparent;
           color: white;
         }
 
@@ -151,7 +180,6 @@ function AdminLogin() {
         .input-modern:focus {
           background: rgba(255,255,255,0.15);
           box-shadow: none;
-          border: none;
         }
 
         .login-btn {
@@ -181,6 +209,18 @@ function AdminLogin() {
           10% { opacity: 1; transform: translateY(0); }
           90% { opacity: 1; }
           100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media(max-width: 768px) {
+          .login-wrapper {
+            flex-direction: column;
+          }
+
+          .login-info {
+            width: 100%;
+            text-align: center;
+          }
         }
       `}</style>
 

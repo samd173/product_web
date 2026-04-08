@@ -14,7 +14,6 @@ function Register() {
 
   const navigate = useNavigate();
 
-  // 🔥 HANDLE REGISTER (UNCHANGED)
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -67,148 +66,102 @@ function Register() {
   };
 
   return (
-    <div className="register-page">
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      <div className="register-card">
+      <div className="row shadow-lg rounded overflow-hidden" style={{ maxWidth: "850px" }}>
 
-        {/* BACK */}
-        <button
-          className="back-btn"
-          onClick={() => navigate(-1)}
-        >
-          ⬅ Back
-        </button>
+        {/* LEFT SIDE */}
+        <div className="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-white p-4"
+          style={{ background: "linear-gradient(135deg, #198754, #0d6efd)" }}>
 
-        <h3 className="title">📝 Create Account</h3>
+          <h2 className="fw-bold">Welcome to AgroMart 🌱</h2>
+          <p className="text-center mt-3">
+            Fresh products directly from farmers to your home
+          </p>
 
-        <form onSubmit={handleRegister}>
+        </div>
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={(e) =>
-              setForm({ ...form, name: e.target.value })
-            }
-          />
+        {/* RIGHT SIDE */}
+        <div className="col-md-6 bg-white p-4">
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) =>
-              setForm({ ...form, password: e.target.value })
-            }
-          />
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={form.confirmPassword}
-            onChange={(e) =>
-              setForm({ ...form, confirmPassword: e.target.value })
-            }
-          />
-
-          <button disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+          {/* BACK */}
+          <button
+            className="btn btn-link p-0 mb-2"
+            onClick={() => navigate(-1)}
+          >
+            ⬅ Back
           </button>
 
-        </form>
+          <h4 className="fw-bold mb-3 text-center">Create Account</h4>
 
-        <p className="login-text">
-          Already have account? <Link to="/login">Login</Link>
-        </p>
+          <form onSubmit={handleRegister}>
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={(e) =>
+                setForm({ ...form, name: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-2"
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-2"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) =>
+                setForm({ ...form, password: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-3"
+              type="password"
+              placeholder="Confirm Password"
+              value={form.confirmPassword}
+              onChange={(e) =>
+                setForm({ ...form, confirmPassword: e.target.value })
+              }
+            />
+
+            <button className="btn btn-success w-100 fw-bold" disabled={loading}>
+              {loading ? "Registering..." : "Register"}
+            </button>
+
+          </form>
+
+          <p className="text-center mt-3">
+            Already have account? <Link to="/login">Login</Link>
+          </p>
+
+        </div>
 
       </div>
 
-      {/* 🔥 STYLES */}
       <style>{`
-        .register-page {
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: linear-gradient(135deg, #198754, #0d6efd);
-        }
-
-        .register-card {
-          background: white;
-          padding: 25px;
-          border-radius: 12px;
-          width: 360px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .title {
-          text-align: center;
-          margin-bottom: 15px;
-        }
-
-        .register-card input {
-          width: 100%;
-          padding: 10px;
-          margin-bottom: 10px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-        }
-
-        .register-card button {
-          width: 100%;
-          padding: 10px;
-          border: none;
-          border-radius: 8px;
-          background: #198754;
-          color: white;
-          font-weight: bold;
-        }
-
-        .register-card button:hover {
-          background: #157347;
-        }
-
-        .login-text {
-          text-align: center;
-          margin-top: 10px;
-        }
-
-        .back-btn {
-          border: none;
-          background: none;
-          margin-bottom: 10px;
-          color: #0d6efd;
-        }
-
         .toast-msg {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 80px;
+          right: 15px;
           background: #198754;
           color: white;
           padding: 12px 18px;
           border-radius: 8px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
           z-index: 9999;
-          animation: fadeInOut 2s ease;
-        }
-
-        @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(-10px); }
-          10% { opacity: 1; transform: translateY(0); }
-          90% { opacity: 1; }
-          100% { opacity: 0; transform: translateY(-10px); }
         }
       `}</style>
 

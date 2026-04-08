@@ -12,7 +12,6 @@ function Login() {
 
   const navigate = useNavigate();
 
-  // 🔥 HANDLE LOGIN (UNCHANGED)
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -71,120 +70,82 @@ function Login() {
   };
 
   return (
-    <div className="login-page">
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      <div className="login-card">
+      <div className="row shadow-lg rounded overflow-hidden" style={{ maxWidth: "850px" }}>
 
-        {/* BACK */}
-        <button
-          className="back-btn"
-          onClick={() => navigate(-1)}
-        >
-          ⬅ Back
-        </button>
+        {/* LEFT SIDE */}
+        <div className="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-white p-4"
+          style={{ background: "linear-gradient(135deg, #198754, #0d6efd)" }}>
 
-        <h3 className="title">🔐 Login to AgroMart</h3>
+          <h2 className="fw-bold">Welcome Back 👋</h2>
+          <p className="text-center mt-3">
+            Login to continue shopping fresh products
+          </p>
 
-        <form onSubmit={handleLogin}>
+        </div>
 
-          <input
-            type="email"
-            placeholder="Enter Email"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-          />
+        {/* RIGHT SIDE */}
+        <div className="col-md-6 bg-white p-4">
 
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={form.password}
-            onChange={(e) =>
-              setForm({ ...form, password: e.target.value })
-            }
-          />
-
-          <button disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          {/* BACK */}
+          <button
+            className="btn btn-link p-0 mb-2"
+            onClick={() => navigate(-1)}
+          >
+            ⬅ Back
           </button>
 
-        </form>
+          <h4 className="fw-bold mb-3 text-center">Login to AgroMart</h4>
 
-        <p className="register-text">
-          New user? <Link to="/register">Register</Link>
-        </p>
+          <form onSubmit={handleLogin}>
+
+            <input
+              className="form-control mb-2"
+              type="email"
+              placeholder="Enter Email"
+              value={form.email}
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-3"
+              type="password"
+              placeholder="Enter Password"
+              value={form.password}
+              onChange={(e) =>
+                setForm({ ...form, password: e.target.value })
+              }
+            />
+
+            <button className="btn btn-success w-100 fw-bold" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </button>
+
+          </form>
+
+          <p className="text-center mt-3">
+            New user? <Link to="/register">Register</Link>
+          </p>
+
+        </div>
 
       </div>
 
-      {/* 🔥 STYLES */}
       <style>{`
-        .login-page {
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: linear-gradient(135deg, #198754, #0d6efd);
-        }
-
-        .login-card {
-          background: white;
-          padding: 25px;
-          border-radius: 12px;
-          width: 350px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .title {
-          text-align: center;
-          margin-bottom: 15px;
-        }
-
-        .login-card input {
-          width: 100%;
-          padding: 10px;
-          margin-bottom: 10px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-        }
-
-        .login-card button {
-          width: 100%;
-          padding: 10px;
-          border: none;
-          border-radius: 8px;
-          background: #198754;
-          color: white;
-          font-weight: bold;
-        }
-
-        .login-card button:hover {
-          background: #157347;
-        }
-
-        .register-text {
-          text-align: center;
-          margin-top: 10px;
-        }
-
-        .back-btn {
-          border: none;
-          background: none;
-          margin-bottom: 10px;
-          color: #0d6efd;
-        }
-
         .toast-msg {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 80px;
+          right: 15px;
           background: #198754;
           color: white;
           padding: 12px 18px;
           border-radius: 8px;
+          z-index: 9999;
         }
       `}</style>
 

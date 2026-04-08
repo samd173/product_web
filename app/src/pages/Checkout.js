@@ -24,7 +24,6 @@ function Checkout() {
     0
   );
 
-  // 📦 COD ORDER (UNCHANGED)
   const placeOrder = async () => {
     if (!user || !user.id) {
       setToast("Please login first ❌");
@@ -74,7 +73,6 @@ function Checkout() {
     }
   };
 
-  // 💳 RAZORPAY (UNCHANGED)
   const handleRazorpayPayment = () => {
 
     if (!user || !user.id) {
@@ -151,44 +149,47 @@ function Checkout() {
   return (
     <div className="container mt-5 pt-4">
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      <h2 className="text-center mb-4">💳 Checkout</h2>
+      <h3 className="fw-bold text-center mb-4">💳 Checkout</h3>
 
       <div className="row g-4">
 
         {/* LEFT */}
-        <div className="col-md-7">
-          <div className="checkout-card">
+        <div className="col-lg-7">
+          <div className="card shadow-sm border-0 p-4">
 
-            <h5>👤 Billing Details</h5>
+            <h5 className="fw-bold mb-3">👤 Billing Details</h5>
 
             <input className="form-control mb-2" placeholder="Full Name" defaultValue={user?.name || ""} />
             <input className="form-control mb-2" placeholder="Email" defaultValue={user?.email || ""} />
             <input className="form-control mb-2" placeholder="Address" />
             <input className="form-control mb-3" placeholder="Phone" />
 
-            <h6>💳 Payment Method</h6>
+            <h6 className="fw-bold mt-3">💳 Payment Method</h6>
 
-            <label className="d-block">
+            <div className="form-check">
               <input
                 type="radio"
+                className="form-check-input"
                 checked={paymentMethod === "COD"}
                 onChange={() => setPaymentMethod("COD")}
-              /> Cash on Delivery
-            </label>
+              />
+              <label className="form-check-label">Cash on Delivery</label>
+            </div>
 
-            <label className="d-block">
+            <div className="form-check">
               <input
                 type="radio"
+                className="form-check-input"
                 checked={paymentMethod === "UPI"}
                 onChange={() => setPaymentMethod("UPI")}
-              /> Online Payment (Razorpay)
-            </label>
+              />
+              <label className="form-check-label">Online Payment (Razorpay)</label>
+            </div>
 
             <button
-              className="btn btn-success w-100 mt-3"
+              className="btn btn-success w-100 mt-4 fw-bold"
               onClick={paymentMethod === "COD" ? placeOrder : handleRazorpayPayment}
             >
               Pay ₹{total}
@@ -198,13 +199,13 @@ function Checkout() {
         </div>
 
         {/* RIGHT */}
-        <div className="col-md-5">
-          <div className="summary-card">
+        <div className="col-lg-5">
+          <div className="card shadow-sm border-0 p-4 sticky-top" style={{ top: "100px" }}>
 
-            <h5>🧾 Order Summary</h5>
+            <h5 className="fw-bold mb-3">🧾 Order Summary</h5>
 
             {items.map((item, i) => (
-              <div key={i} className="summary-item">
+              <div key={i} className="d-flex justify-content-between mb-2">
                 <span>{item.name} × {item.qty}</span>
                 <span>₹{item.price * item.qty}</span>
               </div>
@@ -212,9 +213,9 @@ function Checkout() {
 
             <hr />
 
-            <div className="total-box">
-              <h6>Total</h6>
-              <h5>₹{total}</h5>
+            <div className="d-flex justify-content-between fw-bold fs-5">
+              <span>Total</span>
+              <span className="text-success">₹{total}</span>
             </div>
 
           </div>
@@ -222,43 +223,16 @@ function Checkout() {
 
       </div>
 
-      {/* 🔥 STYLES */}
       <style>{`
-        .checkout-card {
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .summary-card {
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .summary-item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 10px;
-          font-size: 14px;
-        }
-
-        .total-box {
-          display: flex;
-          justify-content: space-between;
-          font-weight: bold;
-        }
-
         .toast-msg {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 80px;
+          right: 15px;
           background: #198754;
           color: white;
           padding: 12px 18px;
           border-radius: 8px;
+          z-index: 9999;
         }
       `}</style>
 

@@ -168,7 +168,7 @@ function Orders() {
 
       </div>
 
-      {/* 🔥 MODERN STYLES */}
+      {/* 🔥 STYLES */}
       <style>{`
         .modern-table {
           border-radius: 16px;

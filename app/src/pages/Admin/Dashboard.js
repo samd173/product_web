@@ -29,6 +29,9 @@ function Dashboard() {
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
+  // 🔥 NEW (LOW STOCK - UI ONLY)
+  const lowStockProducts = products.filter(p => p.quantity < 10);
+
   return (
     <div className="d-flex bg-light min-vh-100">
 
@@ -45,7 +48,7 @@ function Dashboard() {
         {/* 🔥 MODERN CARDS */}
         <div className="row g-4">
 
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="modern-card product-card">
               <div>
                 <h6>Total Products</h6>
@@ -55,7 +58,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="modern-card order-card">
               <div>
                 <h6>Total Orders</h6>
@@ -65,17 +68,53 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="modern-card revenue-card">
               <div>
-                <h6>Revenue</h6>
+                <h6>Total Revenue</h6>
                 <h2>₹{totalRevenue}</h2>
               </div>
               <div className="icon">💰</div>
             </div>
           </div>
 
+          {/* 🔥 NEW LOW STOCK CARD */}
+          <div className="col-md-3">
+            <div className="modern-card low-card">
+              <div>
+                <h6>Low Stock Items</h6>
+                <h2>{lowStockProducts.length}</h2>
+              </div>
+              <div className="icon">⚠</div>
+            </div>
+          </div>
+
         </div>
+
+        {/* 🔥 LOW STOCK LIST */}
+        {lowStockProducts.length > 0 && (
+          <div className="card mt-4 border-danger">
+
+            <div className="card-body">
+
+              <h5 className="text-danger fw-bold">⚠ Low Stock Alert</h5>
+
+              {lowStockProducts.map(p => (
+                <div
+                  key={p.id}
+                  className="d-flex justify-content-between border-bottom py-2"
+                >
+                  <span>{p.name}</span>
+                  <span className="text-danger fw-bold">
+                    {p.quantity} left
+                  </span>
+                </div>
+              ))}
+
+            </div>
+
+          </div>
+        )}
 
         {/* 🔥 MODERN TABLE */}
         <div className="card modern-table mt-5">
@@ -113,7 +152,6 @@ function Dashboard() {
                           ₹{o.total}
                         </td>
 
-                        {/* 💳 PAYMENT */}
                         <td>
                           <span className={`badge ${
                             o.paymentMethod === "Razorpay"
@@ -124,7 +162,6 @@ function Dashboard() {
                           </span>
                         </td>
 
-                        {/* STATUS */}
                         <td>
                           <span className={`badge ${
                             o.status === "Pending"
@@ -166,25 +203,10 @@ function Dashboard() {
           transition: 0.3s;
         }
 
-        .modern-card h6 {
-          opacity: 0.9;
-          margin-bottom: 5px;
-        }
-
-        .modern-card h2 {
-          font-weight: bold;
-        }
-
-        .modern-card .icon {
-          font-size: 40px;
-          opacity: 0.8;
-        }
-
         .modern-card:hover {
           transform: translateY(-5px) scale(1.02);
         }
 
-        /* COLORS */
         .product-card {
           background: linear-gradient(135deg, #0d6efd, #3d8bfd);
         }
@@ -198,20 +220,18 @@ function Dashboard() {
           color: black;
         }
 
-        /* TABLE */
+        .low-card {
+          background: linear-gradient(135deg, #dc3545, #ff6b6b);
+        }
+
         .modern-table {
           border-radius: 16px;
           box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-          border: none;
         }
 
         thead {
           background: #111;
           color: white;
-        }
-
-        .order-row {
-          transition: 0.3s;
         }
 
         .order-row:hover {
