@@ -14,6 +14,7 @@ function Crops() {
   const category = params.get("category");
   const search = params.get("search");
 
+  // 🔥 LOAD PRODUCTS (UNCHANGED)
   useEffect(() => {
     fetch("https://backend-project-sa6b.onrender.com/products")
       .then(res => res.json())
@@ -24,6 +25,7 @@ function Crops() {
       .catch(() => setLoading(false));
   }, []);
 
+  // 🔥 LOAD CART (UNCHANGED)
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(data);
@@ -37,6 +39,7 @@ function Crops() {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  // 🔍 FILTER (UNCHANGED)
   const filteredProducts = products.filter((p) => {
     const matchCategory = !category || p.category === category;
     const matchSearch =
@@ -45,6 +48,7 @@ function Crops() {
     return matchCategory && matchSearch;
   });
 
+  // 🛒 UPDATE CART (UNCHANGED)
   const updateCart = (product, change) => {
     let updated = [...cart];
     const index = updated.findIndex((i) => i.id === product.id);
@@ -64,12 +68,14 @@ function Crops() {
     window.dispatchEvent(new Event("storage"));
   };
 
+  // 🛒 BUY NOW (UNCHANGED)
   const buyNow = (product) => {
     const temp = [{ ...product, qty: 1 }];
     localStorage.setItem("buyNow", JSON.stringify(temp));
     navigate("/checkout");
   };
 
+  // 🔄 LOADING
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -80,102 +86,137 @@ function Crops() {
   }
 
   return (
-    <div className="container mt-5 pt-4">
+    <div className="container-fluid mt-5 pt-4">
 
+      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      <h2 className="mb-4 text-center fw-bold">🥬 Fresh Crops</h2>
+      <div className="row">
 
-      <div className="row g-4">
+        {/* 🔥 SIDEBAR (UI ONLY) */}
+        <div className="col-lg-2 d-none d-lg-block">
+          <div className="bg-white p-3 shadow-sm rounded">
+            <h6 className="fw-bold">Filters</h6>
 
-        {filteredProducts.length === 0 ? (
-          <p className="text-center text-muted">No products found 😢</p>
-        ) : (
-          filteredProducts.map((p) => {
+            <hr />
 
-            const item = cart.find((i) => i.id === p.id);
-            const qty = item ? item.qty : 0;
+            <p className="fw-semibold mb-1">Category</p>
+            <div className="text-muted small">
+              <div>Vegetables</div>
+              <div>Fruits</div>
+              <div>Grains</div>
+              <div>Roots</div>
+            </div>
 
-            return (
-              <div className="col-lg-3 col-md-4 col-6" key={p.id}>
-                <div className="card h-100 product-card shadow-sm border-0">
+            <hr />
 
-                  {/* IMAGE */}
-                  <div className="img-box">
-                    <img
-                      src={p.image || "https://via.placeholder.com/300"}
-                      alt={p.name}
-                      className="card-img-top"
-                    />
-                  </div>
+            <p className="fw-semibold mb-1">Price</p>
+            <div className="text-muted small">
+              <div>Below ₹50</div>
+              <div>₹50 - ₹100</div>
+              <div>Above ₹100</div>
+            </div>
+          </div>
+        </div>
 
-                  <div className="card-body text-center">
+        {/* 🔥 MAIN CONTENT */}
+        <div className="col-lg-10">
 
-                    <small className="text-muted">{p.category}</small>
+          {/* 🔝 TOP BAR */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5 className="fw-bold m-0">🥬 Fresh Crops</h5>
 
-                    <h6 className="fw-bold product-title mt-1">{p.name}</h6>
+            <select className="form-select w-auto">
+              <option>Sort By</option>
+              <option>Price Low → High</option>
+              <option>Price High → Low</option>
+            </select>
+          </div>
 
-                    <h5 className="text-success fw-bold">
-                      ₹{p.price}
-                      <span className="text-muted fs-6">/{p.unit}</span>
-                    </h5>
+          {/* 🔥 PRODUCTS */}
+          <div className="row g-4">
 
-                    <small className="text-muted d-block">
-                      Stock: {p.quantity} {p.unit}
-                    </small>
+            {filteredProducts.length === 0 ? (
+              <p className="text-center text-muted">No products found 😢</p>
+            ) : (
+              filteredProducts.map((p) => {
 
-                    {p.quantity > 0 ? (
-                      <span className="badge bg-success mb-2">In Stock</span>
-                    ) : (
-                      <span className="badge bg-danger mb-2">Out of Stock</span>
-                    )}
+                const item = cart.find((i) => i.id === p.id);
+                const qty = item ? item.qty : 0;
 
-                    {/* CART */}
-                    {qty === 0 ? (
-                      <button
-                        className="btn btn-warning w-100 fw-semibold"
-                        disabled={p.quantity === 0}
-                        onClick={() => updateCart(p, 1)}
-                      >
-                        Add to Cart
-                      </button>
-                    ) : (
-                      <div className="d-flex justify-content-between align-items-center mt-2">
-                        <button className="btn btn-danger btn-sm" onClick={() => updateCart(p, -1)}>-</button>
-                        <span className="fw-bold">{qty}</span>
-                        <button className="btn btn-success btn-sm" onClick={() => updateCart(p, 1)}>+</button>
+                return (
+                  <div className="col-lg-3 col-md-4 col-6" key={p.id}>
+                    <div className="card product-card h-100 shadow-sm border-0">
+
+                      {/* IMAGE */}
+                      <div className="img-box">
+                        <img src={p.image} alt="" />
                       </div>
-                    )}
 
-                    {/* BUY NOW */}
-                    <button
-                      className="btn btn-dark w-100 mt-2"
-                      disabled={p.quantity === 0}
-                      onClick={() => buyNow(p)}
-                    >
-                      Buy Now
-                    </button>
+                      <div className="card-body text-center">
 
+                        <small className="text-muted">{p.category}</small>
+
+                        <h6 className="fw-bold product-title">{p.name}</h6>
+
+                        <h5 className="text-success fw-bold">
+                          ₹{p.price}
+                          <span className="text-muted fs-6">/{p.unit}</span>
+                        </h5>
+
+                        {p.quantity > 0 ? (
+                          <span className="badge bg-success mb-2">In Stock</span>
+                        ) : (
+                          <span className="badge bg-danger mb-2">Out of Stock</span>
+                        )}
+
+                        {/* CART */}
+                        {qty === 0 ? (
+                          <button
+                            className="btn btn-warning w-100"
+                            onClick={() => updateCart(p, 1)}
+                          >
+                            Add to Cart
+                          </button>
+                        ) : (
+                          <div className="d-flex justify-content-between">
+                            <button className="btn btn-danger btn-sm" onClick={() => updateCart(p, -1)}>-</button>
+                            <span>{qty}</span>
+                            <button className="btn btn-success btn-sm" onClick={() => updateCart(p, 1)}>+</button>
+                          </div>
+                        )}
+
+                        {/* BUY NOW */}
+                        <button
+                          className="btn btn-dark w-100 mt-2"
+                          onClick={() => buyNow(p)}
+                        >
+                          Buy Now
+                        </button>
+
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })
-        )}
+                );
+              })
+            )}
+
+          </div>
+
+        </div>
 
       </div>
 
-      {/* STYLE */}
+      {/* 🔥 STYLE */}
       <style>{`
         .product-card {
           border-radius: 12px;
           transition: 0.3s;
-          overflow: hidden;
         }
 
         .product-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         .img-box {
@@ -205,7 +246,7 @@ function Crops() {
           right: 20px;
           background: #198754;
           color: white;
-          padding: 12px 18px;
+          padding: 12px;
           border-radius: 8px;
           z-index: 999;
         }
