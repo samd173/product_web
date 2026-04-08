@@ -1,218 +1,116 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "./Navbar.css";
 
 function Navbar() {
-  const [cartCount, setCartCount] = useState(0);
-  const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
-  const [showMenu, setShowMenu] = useState(false);
   const [products, setProducts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // 🔥 LOAD DATA
-  const loadData = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-    setCartCount(totalQty);
-
-    const customer = JSON.parse(localStorage.getItem("customer"));
-    setUser(customer);
-
-    const data = JSON.parse(localStorage.getItem("products")) || [];
-    setProducts(data);
-  };
-
+  // 🔥 LOAD PRODUCTS (for suggestions)
   useEffect(() => {
-    loadData();
-    window.addEventListener("storage", loadData);
-
-    return () => {
-      window.removeEventListener("storage", loadData);
-    };
+    fetch("https://backend-project-sa6b.onrender.com/products")
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(() => {});
   }, []);
 
-  // 🔥 CLOSE DROPDOWN ON OUTSIDE CLICK (NEW FIX)
+  // 🔍 FILTER SUGGESTIONS
   useEffect(() => {
-    const closeMenu = () => setShowMenu(false);
-    window.addEventListener("click", closeMenu);
-
-    return () => window.removeEventListener("click", closeMenu);
-  }, []);
-
-  // 🔍 SEARCH
-  const handleChange = (value) => {
-    setSearch(value);
-
-    if (!value.trim()) {
+    if (search.trim() === "") {
       setSuggestions([]);
+      setShowDropdown(false);
       return;
     }
 
-    const filtered = products.filter((p) =>
-      p.name.toLowerCase().includes(value.toLowerCase())
-    );
+    const filtered = products
+      .filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      )
+      .slice(0, 5); // top 5 suggestions
 
-    setSuggestions(filtered.slice(0, 5));
-  };
+    setSuggestions(filtered);
+    setShowDropdown(true);
+  }, [search, products]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!search.trim()) return;
-
-    navigate(`/crops?search=${search}`);
-    setSuggestions([]);
-  };
-
+  // 👉 CLICK SUGGESTION
   const handleSelect = (name) => {
-    setSearch(name);
+    setSearch("");
+    setShowDropdown(false);
     navigate(`/crops?search=${name}`);
-    setSuggestions([]);
   };
-
-  // 🔥 LOGOUT
-  const handleLogout = () => {
-    localStorage.removeItem("customer");
-    navigate("/login");
-  };
-
-  const active = (path) =>
-    location.pathname === path
-      ? "btn btn-success mx-2 my-1"
-      : "btn btn-outline-light mx-2 my-1";
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 fixed-top w-100">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+      <div className="container-fluid">
 
-      <h4
-        className="text-success fw-bold"
-        style={{ cursor: "pointer" }}
-        onClick={() => navigate("/home")}
-      >
-        🌱 AgroMart
-      </h4>
+        <Link className="navbar-brand fw-bold" to="/home">
+          AgroMart 🌱
+        </Link>
 
-      <button
-        className="navbar-toggler"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarContent"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-      <div className="collapse navbar-collapse" id="navbarContent">
+        <div className="collapse navbar-collapse" id="navbarContent">
 
-        {/* 🔍 SEARCH */}
-        <div style={{ position: "relative", width: "250px" }} className="mx-3 my-2">
-          <form onSubmit={handleSearch}>
+          {/* 🔍 SEARCH WITH DROPDOWN */}
+          <div className="search-box mx-auto w-50 position-relative">
+
             <input
-              type="text"
-              placeholder="Search crops..."
               className="form-control"
+              type="search"
+              placeholder="Search crops..."
               value={search}
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
-          </form>
 
-          {suggestions.length > 0 && (
-            <div
-              className="bg-white shadow rounded mt-1"
-              style={{ position: "absolute", width: "100%", zIndex: 1000 }}
-              onClick={(e) => e.stopPropagation()}  // 🔥 FIX
-            >
-              {suggestions.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleSelect(item.name)}
-                  className="p-2 d-flex align-items-center"
-                  style={{ cursor: "pointer" }}
-                >
-                  <img
-                    src={item.image}
-                    alt=""
-                    style={{ width: "40px", borderRadius: "8px", marginRight: "10px" }}
-                  />
-                  {item.name}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* RIGHT */}
-        <div className="ms-auto d-flex flex-column flex-lg-row align-items-lg-center">
-
-          <Link to="/home" className={active("/home")}>Home</Link>
-          <Link to="/crops" className={active("/crops")}>Crops</Link>
-
-          {/* 🛒 CART */}
-          <Link to="/cart" className="btn btn-warning mx-2 my-1 position-relative">
-            🛒 Cart
-            {cartCount > 0 && (
-              <span style={{
-                position: "absolute",
-                top: "-5px",
-                right: "-10px",
-                background: "red",
-                color: "#fff",
-                borderRadius: "50%",
-                padding: "3px 7px",
-                fontSize: "12px"
-              }}>
-                {cartCount}
-              </span>
-            )}
-          </Link>
-
-          {/* 👤 USER */}
-          {user ? (
-            <div className="position-relative mx-2 my-1">
-              <button
-                className="btn btn-outline-light"
-                onClick={(e) => {
-                  e.stopPropagation();   // 🔥 FIX
-                  setShowMenu(!showMenu);
-                }}
-              >
-                👤 {user.name}
-              </button>
-
-              {showMenu && (
-                <div
-                  className="bg-white shadow p-2 rounded position-absolute"
-                  style={{ right: 0, top: "40px", minWidth: "160px" }}
-                  onClick={(e) => e.stopPropagation()} // 🔥 FIX
-                >
-                  <button className="dropdown-item" onClick={() => navigate("/profile")}>
-                    👤 Profile
-                  </button>
-
-                  <button className="dropdown-item" onClick={() => navigate("/corders")}>
-                    📦 My Orders
-                  </button>
-
-                  <hr />
-
-                  <button
-                    className="dropdown-item text-danger"
-                    onClick={handleLogout}
+            {/* 🔽 DROPDOWN */}
+            {showDropdown && suggestions.length > 0 && (
+              <div className="search-dropdown">
+                {suggestions.map((item) => (
+                  <div
+                    key={item.id}
+                    className="dropdown-item"
+                    onClick={() => handleSelect(item.name)}
                   >
-                    🚪 Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="btn btn-success mx-2 my-1">Login</Link>
-              <Link to="/register" className="btn btn-outline-light mx-2 my-1">Register</Link>
-            </>
-          )}
+                    🔍 {item.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 📌 NAV LINKS */}
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/home">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/crops">Crops</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/cart">Cart 🛒</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/corders">My Orders 📦</Link>
+            </li>
+            <li className="nav-item">
+  <Link className="nav-link" to="/profile">
+    Profile 👤
+  </Link>
+</li>
+          </ul>
 
         </div>
-
       </div>
     </nav>
   );
