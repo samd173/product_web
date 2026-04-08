@@ -44,75 +44,67 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div className="container-fluid">
 
-        <Link className="navbar-brand fw-bold" to="/home">
-          AgroMart 🌱
-        </Link>
+    {/* LOGO */}
+    <Link className="navbar-brand" to="/home">
+      AgroMart 🌱
+    </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    {/* 🍔 BUTTON */}
+    <button
+      className="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
 
-        <div className="collapse navbar-collapse" id="navbarContent">
+    {/* 🔍 SEARCH (🔥 OUTSIDE COLLAPSE) */}
+    <div className="search-box w-100 mt-2 d-lg-none">
+      <input
+        className="form-control"
+        type="search"
+        placeholder="Search crops..."
+      />
+    </div>
 
-          {/* 🔍 SEARCH WITH DROPDOWN */}
-          <div className="search-box mx-auto w-100 w-lg-50 position-relative">
+    {/* 🔽 MENU */}
+    <div className="collapse navbar-collapse" id="navbarContent">
 
-            <input
-              className="form-control"
-              type="search"
-              placeholder="Search crops..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            {/* 🔽 DROPDOWN */}
-            {showDropdown && suggestions.length > 0 && (
-              <div className="search-dropdown">
-                {suggestions.map((item) => (
-                  <div
-                    key={item.id}
-                    className="dropdown-item"
-                    onClick={() => handleSelect(item.name)}
-                  >
-                    🔍 {item.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* 📌 NAV LINKS */}
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/home">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/crops">Crops</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/cart">Cart 🛒</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/corders">My Orders 📦</Link>
-            </li>
-            <li className="nav-item">
-  <Link className="nav-link" to="/profile">
-    Profile 👤
-  </Link>
-</li>
-          </ul>
-
-        </div>
+      {/* 🔍 DESKTOP SEARCH */}
+      <div className="search-box mx-auto w-50 d-none d-lg-block">
+        <input
+          className="form-control"
+          type="search"
+          placeholder="Search crops..."
+        />
       </div>
-    </nav>
+
+      {/* LINKS */}
+      <ul className="navbar-nav ms-auto text-center">
+        <li className="nav-item">
+          <Link className="nav-link" to="/home">Home</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/crops">Crops</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/cart">Cart 🛒</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/orders">Orders 📦</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/profile">Profile 👤</Link>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>
   );
 }
 
