@@ -72,7 +72,7 @@ function Navbar() {
     </div>
 
     {/* 🔽 MENU */}
-    <div className="collapse navbar-collapse" id="navbarContent">
+    <div className="collapse navbar-collapse bg-dark p-3 rounded" id="navbarContent">
 
       {/* 🔍 DESKTOP SEARCH */}
       <div className="search-box mx-auto w-50 d-none d-lg-block">

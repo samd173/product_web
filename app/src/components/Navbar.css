@@ -24,9 +24,18 @@
 @media (max-width: 768px) {
   .navbar-collapse {
     display: flex;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
     flex-direction: column;
     gap: 10px;
+    background: #212529;
+    padding: 15px;
+    border-radius: 10px;
   }
+
 
   .search-box {
     order: 1;
