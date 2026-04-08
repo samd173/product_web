@@ -61,7 +61,7 @@ function Home() {
       {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
-      {/* 🔥 SLIDER */}
+      {/* 🔥 ADVANCED SLIDER */}
       <div className="rounded overflow-hidden mb-4 shadow-sm position-relative" style={{ height: "220px" }}>
         <div
           style={{
@@ -94,15 +94,23 @@ function Home() {
         </div>
 
         {/* Buttons */}
-        <button className="btn btn-dark position-absolute top-50 start-0 translate-middle-y"
+        <button
+          className="btn btn-dark position-absolute top-50 start-0 translate-middle-y"
           style={{ opacity: 0.6 }}
-          onClick={() => setCurrent(current === 0 ? images.length - 1 : current - 1)}>
+          onClick={() =>
+            setCurrent(current === 0 ? images.length - 1 : current - 1)
+          }
+        >
           ‹
         </button>
 
-        <button className="btn btn-dark position-absolute top-50 end-0 translate-middle-y"
+        <button
+          className="btn btn-dark position-absolute top-50 end-0 translate-middle-y"
           style={{ opacity: 0.6 }}
-          onClick={() => setCurrent((current + 1) % images.length)}>
+          onClick={() =>
+            setCurrent((current + 1) % images.length)
+          }
+        >
           ›
         </button>
 
@@ -128,11 +136,15 @@ function Home() {
       <h5 className="mb-3">🛒 Categories</h5>
       <div className="d-flex gap-3 overflow-auto pb-2">
         {["Vegetables", "Fruits", "Grains", "Roots"].map((cat, i) => (
-          <div key={i} className="text-center"
+          <div
+            key={i}
+            className="text-center"
             style={{ minWidth: "80px", cursor: "pointer" }}
-            onClick={() => navigate(`/crops?category=${cat}`)}>
+            onClick={() => navigate(`/crops?category=${cat}`)}
+          >
             <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
-              style={{ width: "60px", height: "60px" }}>
+              style={{ width: "60px", height: "60px" }}
+            >
               {cat === "Vegetables" && "🥬"}
               {cat === "Fruits" && "🍎"}
               {cat === "Grains" && "🌾"}
@@ -143,7 +155,7 @@ function Home() {
         ))}
       </div>
 
-      {/* 🔥 PRODUCTS SECTIONS */}
+      {/* 🔥 PRODUCT SECTIONS */}
       {[
         { title: "🔥 Featured Products", data: products.slice(0, 4) },
         { title: "🌱 Recently Added", data: products.slice(4, 8) }
@@ -152,8 +164,10 @@ function Home() {
 
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h6 className="fw-bold m-0">{section.title}</h6>
-            <button className="btn btn-sm btn-outline-success"
-              onClick={() => navigate("/crops")}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              onClick={() => navigate("/crops")}
+            >
               View All →
             </button>
           </div>
@@ -168,8 +182,12 @@ function Home() {
                 <div className="col-6 col-md-3" key={p.id}>
                   <div className="card h-100 border-0 shadow-sm">
 
-                    <img src={p.image} className="card-img-top"
-                      style={{ height: "140px", objectFit: "cover" }} />
+                    <img
+                      src={p.image}
+                      className="card-img-top"
+                      style={{ height: "140px", objectFit: "cover" }}
+                      alt=""
+                    />
 
                     <div className="card-body p-2">
 
@@ -189,9 +207,11 @@ function Home() {
                       <div className="mt-2">
 
                         {qty === 0 ? (
-                          <button className="btn btn-warning w-100 btn-sm"
-                            onClick={() => updateCart(p, 1)}>
-                            Add
+                          <button
+                            className="btn btn-warning w-100 btn-sm"
+                            onClick={() => updateCart(p, 1)}
+                          >
+                            🛒 Add to Cart
                           </button>
                         ) : (
                           <div className="d-flex justify-content-between">
@@ -200,6 +220,13 @@ function Home() {
                             <button className="btn btn-success btn-sm" onClick={() => updateCart(p, 1)}>+</button>
                           </div>
                         )}
+
+                        <button
+                          className="btn btn-dark w-100 btn-sm mt-1"
+                          onClick={() => buyNow(p)}
+                        >
+                          Buy Now
+                        </button>
 
                       </div>
 
@@ -213,22 +240,6 @@ function Home() {
         </div>
       ))}
 
-      {/* 🔥 TOAST STYLE */}
-      <style>{`
-        .toast-msg {
-          position: fixed;
-          top: 70px;
-          right: 10px;
-          background: #198754;
-          color: white;
-          padding: 10px 15px;
-          border-radius: 6px;
-          font-size: 14px;
-        }
-      `}</style>
-
-    
-  
       {/* ⭐ SERVICES */}
       <div className="row mt-4 text-center">
         <div className="col-12 col-md-4 mb-3">
@@ -253,6 +264,7 @@ function Home() {
         </div>
       </div>
 
+
       {/* 🔥 TOAST STYLE */}
       <style>{`
         .toast-msg {
@@ -271,4 +283,5 @@ function Home() {
   );
 }
 
-export default Home;
+export default Home;    
+  
