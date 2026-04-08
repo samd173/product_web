@@ -6,6 +6,7 @@ function Crops() {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState("");
+  const [sort, setSort] = useState(""); // ✅ NEW (no logic change)
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,6 +49,15 @@ function Crops() {
     return matchCategory && matchSearch;
   });
 
+  // 🔥 SORT (NEW - safe layer)
+  let finalProducts = [...filteredProducts];
+
+  if (sort === "low") {
+    finalProducts.sort((a, b) => a.price - b.price);
+  } else if (sort === "high") {
+    finalProducts.sort((a, b) => b.price - a.price);
+  }
+
   // 🛒 UPDATE CART (UNCHANGED)
   const updateCart = (product, change) => {
     let updated = [...cart];
@@ -68,7 +78,6 @@ function Crops() {
     window.dispatchEvent(new Event("storage"));
   };
 
-  // 🛒 BUY NOW (UNCHANGED)
   const buyNow = (product) => {
     const temp = [{ ...product, qty: 1 }];
     localStorage.setItem("buyNow", JSON.stringify(temp));
@@ -88,12 +97,11 @@ function Crops() {
   return (
     <div className="container-fluid mt-5 pt-4">
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
       <div className="row">
 
-        {/* 🔥 SIDEBAR (UI ONLY) */}
+        {/* SIDEBAR */}
         <div className="col-lg-2 d-none d-lg-block">
           <div className="bg-white p-3 shadow-sm rounded">
             <h6 className="fw-bold">Filters</h6>
@@ -119,27 +127,30 @@ function Crops() {
           </div>
         </div>
 
-        {/* 🔥 MAIN CONTENT */}
+        {/* MAIN */}
         <div className="col-lg-10">
 
-          {/* 🔝 TOP BAR */}
+          {/* TOP BAR */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="fw-bold m-0">🥬 Fresh Crops</h5>
 
-            <select className="form-select w-auto">
-              <option>Sort By</option>
-              <option>Price Low → High</option>
-              <option>Price High → Low</option>
+            <select
+              className="form-select w-auto"
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="">Sort By</option>
+              <option value="low">Price Low → High</option>
+              <option value="high">Price High → Low</option>
             </select>
           </div>
 
-          {/* 🔥 PRODUCTS */}
+          {/* PRODUCTS */}
           <div className="row g-4">
 
-            {filteredProducts.length === 0 ? (
+            {finalProducts.length === 0 ? (
               <p className="text-center text-muted">No products found 😢</p>
             ) : (
-              filteredProducts.map((p) => {
+              finalProducts.map((p) => {
 
                 const item = cart.find((i) => i.id === p.id);
                 const qty = item ? item.qty : 0;
@@ -148,7 +159,6 @@ function Crops() {
                   <div className="col-lg-3 col-md-4 col-6" key={p.id}>
                     <div className="card product-card h-100 shadow-sm border-0">
 
-                      {/* IMAGE */}
                       <div className="img-box">
                         <img src={p.image} alt="" />
                       </div>
@@ -170,7 +180,6 @@ function Crops() {
                           <span className="badge bg-danger mb-2">Out of Stock</span>
                         )}
 
-                        {/* CART */}
                         {qty === 0 ? (
                           <button
                             className="btn btn-warning w-100"
@@ -186,7 +195,6 @@ function Crops() {
                           </div>
                         )}
 
-                        {/* BUY NOW */}
                         <button
                           className="btn btn-dark w-100 mt-2"
                           onClick={() => buyNow(p)}
@@ -207,7 +215,6 @@ function Crops() {
 
       </div>
 
-      {/* 🔥 STYLE */}
       <style>{`
         .product-card {
           border-radius: 12px;
@@ -248,7 +255,6 @@ function Crops() {
           color: white;
           padding: 12px;
           border-radius: 8px;
-          z-index: 999;
         }
       `}</style>
 
