@@ -20,3 +20,25 @@
 .dropdown-item:hover {
   background: #f1f1f1;
 }
+
+@media (max-width: 768px) {
+  .navbar-collapse {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-box {
+    order: 1;
+    width: 100% !important;
+  }
+
+  .navbar-nav {
+    order: 2;
+    width: 100%;
+  }
+
+  .navbar-nav .nav-item {
+    text-align: center;
+  }
+}

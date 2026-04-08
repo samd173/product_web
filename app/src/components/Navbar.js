@@ -63,7 +63,7 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarContent">
 
           {/* 🔍 SEARCH WITH DROPDOWN */}
-          <div className="search-box mx-auto w-50 position-relative">
+          <div className="search-box mx-auto w-100 w-lg-50 position-relative">
 
             <input
               className="form-control"
