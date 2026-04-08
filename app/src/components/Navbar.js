@@ -10,7 +10,7 @@ function Navbar() {
 
   const navigate = useNavigate();
 
-  // 🔥 LOAD PRODUCTS (for suggestions)
+  // 🔥 LOAD PRODUCTS (UNCHANGED)
   useEffect(() => {
     fetch("https://backend-project-sa6b.onrender.com/products")
       .then(res => res.json())
@@ -18,7 +18,7 @@ function Navbar() {
       .catch(() => {});
   }, []);
 
-  // 🔍 FILTER SUGGESTIONS
+  // 🔍 FILTER SUGGESTIONS (UNCHANGED)
   useEffect(() => {
     if (search.trim() === "") {
       setSuggestions([]);
@@ -30,13 +30,13 @@ function Navbar() {
       .filter(p =>
         p.name.toLowerCase().includes(search.toLowerCase())
       )
-      .slice(0, 5); // top 5 suggestions
+      .slice(0, 5);
 
     setSuggestions(filtered);
     setShowDropdown(true);
   }, [search, products]);
 
-  // 👉 CLICK SUGGESTION
+  // 👉 CLICK SUGGESTION (UNCHANGED)
   const handleSelect = (name) => {
     setSearch("");
     setShowDropdown(false);
@@ -45,66 +45,98 @@ function Navbar() {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-  <div className="container-fluid">
+      <div className="container-fluid">
 
-    {/* LOGO */}
-    <Link className="navbar-brand" to="/home">
-      AgroMart 🌱
-    </Link>
+        {/* LOGO */}
+        <Link className="navbar-brand" to="/home">
+          AgroMart 🌱
+        </Link>
 
-    {/* 🍔 BUTTON */}
-    <button
-      className="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarContent"
-    >
-      <span className="navbar-toggler-icon"></span>
-    </button>
+        {/* TOGGLE */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-    {/* 🔍 SEARCH (🔥 OUTSIDE COLLAPSE) */}
-    <div className="search-box w-100 mt-2 d-lg-none">
-      <input
-        className="form-control"
-        type="search"
-        placeholder="Search crops..."
-      />
-    </div>
+        {/* 🔍 MOBILE SEARCH */}
+        <div className="search-box w-100 mt-2 d-lg-none position-relative">
+          <input
+            className="form-control"
+            type="search"
+            placeholder="Search crops..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-    {/* 🔽 MENU */}
-    <div className="collapse navbar-collapse bg-dark p-3 rounded" id="navbarContent">
+          {showDropdown && (
+            <div className="dropdown-box">
+              {suggestions.map((item) => (
+                <div
+                  key={item.id}
+                  className="dropdown-item"
+                  onClick={() => handleSelect(item.name)}
+                >
+                  {item.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* 🔍 DESKTOP SEARCH */}
-      <div className="search-box mx-auto w-50 d-none d-lg-block">
-        <input
-          className="form-control"
-          type="search"
-          placeholder="Search crops..."
-        />
+        {/* MENU */}
+        <div className="collapse navbar-collapse bg-dark p-3 rounded" id="navbarContent">
+
+          {/* 🔍 DESKTOP SEARCH */}
+          <div className="search-box mx-auto w-50 d-none d-lg-block position-relative">
+            <input
+              className="form-control"
+              type="search"
+              placeholder="Search crops..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            {showDropdown && (
+              <div className="dropdown-box">
+                {suggestions.map((item) => (
+                  <div
+                    key={item.id}
+                    className="dropdown-item"
+                    onClick={() => handleSelect(item.name)}
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* LINKS */}
+          <ul className="navbar-nav ms-auto text-center">
+            <li className="nav-item">
+              <Link className="nav-link" to="/home">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/crops">Crops</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/cart">Cart 🛒</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/corders">Orders 📦</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/profile">Profile 👤</Link>
+            </li>
+          </ul>
+
+        </div>
       </div>
-
-      {/* LINKS */}
-      <ul className="navbar-nav ms-auto text-center">
-        <li className="nav-item">
-          <Link className="nav-link" to="/home">Home</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/crops">Crops</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/cart">Cart 🛒</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/orders">Orders 📦</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/profile">Profile 👤</Link>
-        </li>
-      </ul>
-
-    </div>
-  </div>
-</nav>
+    </nav>
   );
 }
 
