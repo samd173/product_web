@@ -22,7 +22,7 @@ function ProtectedRoute({ children, roleRequired }) {
 
   // 👤 customer route
   if (!customer) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace state={{from: location}} />;
   }
 
   return children;
