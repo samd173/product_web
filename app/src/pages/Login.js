@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 function Login() {
   const [form, setForm] = useState({
@@ -9,8 +9,9 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState("");
-
+  const location = useLocation();
   const navigate = useNavigate();
+  const from = location.state?.from?.pathname ||"/home";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -58,7 +59,7 @@ function Login() {
       setToast("Login Successful ✅");
       setTimeout(() => {
         setToast("");
-        navigate("/home");
+        navigate(from, { replace: true });
       }, 1500);
 
     } catch (err) {
