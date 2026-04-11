@@ -26,6 +26,10 @@ function Home() {
 
   // 🛒 Cart logic (UNCHANGED)
   const updateCart = (product, change) => {
+    if (!localStorage.getItem("customer")) {
+navigate("/login", { state: { from: window.location.pathname } });
+return;
+}
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const index = cart.findIndex((i) => i.id === product.id);
 
@@ -43,6 +47,10 @@ function Home() {
   };
 
   const buyNow = (product) => {
+    if (!localStorage.getItem("customer")) {
+  navigate("/login", { state: { from: window.location.pathname } });
+  return;
+}
     const temp = [{ ...product, qty: 1 }];
     localStorage.setItem("buyNow", JSON.stringify(temp));
     navigate("/checkout");

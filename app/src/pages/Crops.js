@@ -57,6 +57,10 @@ function Crops() {
 
   // 🛒 UPDATE CART (UNCHANGED)
   const updateCart = (product, change) => {
+    if (!localStorage.getItem("customer")) {
+  navigate("/login", { state: { from: window.location.pathname } });
+  return;
+}
     let updated = [...cart];
     const index = updated.findIndex((i) => i.id === product.id);
 
@@ -76,6 +80,10 @@ function Crops() {
   };
 
   const buyNow = (product) => {
+    if (!localStorage.getItem("customer")) {
+  navigate("/login", { state: { from: window.location.pathname } });
+  return;
+}
     const temp = [{ ...product, qty: 1 }];
     localStorage.setItem("buyNow", JSON.stringify(temp));
     navigate("/checkout");
