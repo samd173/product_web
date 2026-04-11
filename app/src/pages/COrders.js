@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 function COrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,10 +54,25 @@ function COrders() {
     }
   };
 
+  // 🔥 NEW (Today / Yesterday)
+  const getDateLabel = (date) => {
+    const d = new Date(date);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) return "Today";
+    if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short"
+    });
+  };
+
   if (loading) {
     return (
       <>
-        
         <h3 className="text-center mt-5">Loading orders...</h3>
       </>
     );
@@ -66,8 +80,6 @@ function COrders() {
 
   return (
     <>
-      
-
       <div className="container mt-5 pt-4">
 
         <h3 className="fw-bold text-center mb-4">📦 My Orders</h3>
@@ -84,8 +96,14 @@ function COrders() {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div>
                     <h6 className="mb-0">Order #{order.id}</h6>
-                    <small className="text-muted">
-                      {new Date(order.id).toLocaleString()}
+
+                    {/* 🔥 FIXED DATE */}
+                    <small className="text-muted d-block">
+                      {getDateLabel(order.createdAt)} •{" "}
+                      {new Date(order.createdAt || Date.now()).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
                     </small>
                   </div>
 

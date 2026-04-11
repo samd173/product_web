@@ -6,6 +6,17 @@ function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [toast, setToast] = useState("");
 
+  // 🔥 ADD (Razorpay loader)
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   useEffect(() => {
     const buyNowData = JSON.parse(localStorage.getItem("buyNow"));
     const cartData = JSON.parse(localStorage.getItem("cart"));
@@ -73,7 +84,16 @@ function Checkout() {
     }
   };
 
-  const handleRazorpayPayment = () => {
+  const handleRazorpayPayment = async () => {
+
+    // 🔥 ADD (SDK load)
+    const resLoad = await loadRazorpay();
+
+    if (!resLoad) {
+      setToast("Payment SDK failed ❌");
+      setTimeout(() => setToast(""), 2000);
+      return;
+    }
 
     if (!user || !user.id) {
       setToast("Please login first ❌");
@@ -155,7 +175,6 @@ function Checkout() {
 
       <div className="row g-4">
 
-        {/* LEFT */}
         <div className="col-lg-7">
           <div className="card shadow-sm border-0 p-4">
 
@@ -198,7 +217,6 @@ function Checkout() {
           </div>
         </div>
 
-        {/* RIGHT */}
         <div className="col-lg-5">
           <div className="card shadow-sm border-0 p-4 sticky-top" style={{ top: "100px" }}>
 

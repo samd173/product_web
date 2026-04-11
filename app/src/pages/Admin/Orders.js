@@ -11,6 +11,33 @@ function Orders() {
     setTimeout(() => setToast(""), 2000);
   };
 
+  // 🔥 TODAY / YESTERDAY
+  const getDateLabel = (date) => {
+    const d = new Date(date);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) return "Today";
+    if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short"
+    });
+  };
+
+  // 🔥 STEP TRACKING
+  const getStep = (status) => {
+    switch (status) {
+      case "Pending": return 1;
+      case "Processing": return 2;
+      case "Out for Delivery": return 3;
+      case "Delivered": return 4;
+      default: return 1;
+    }
+  };
+
   const loadOrders = async () => {
     setLoading(true);
     try {
@@ -63,18 +90,14 @@ function Orders() {
 
       <AdminSidebar />
 
-      {/* 🔥 TOAST */}
       {toast && <div className="toast-msg">{toast}</div>}
 
       <div className="w-100 p-4">
 
-        {/* HEADER */}
         <div className="mb-4">
           <h2 className="fw-bold">📦 Orders Management</h2>
-          <p className="text-muted">Manage and track all customer orders</p>
         </div>
 
-        {/* TABLE CARD */}
         <div className="card modern-table border-0">
 
           <div className="card-body">
@@ -91,6 +114,7 @@ function Orders() {
                   <thead>
                     <tr>
                       <th>#ID</th>
+                      <th>Date</th>
                       <th>Customer</th>
                       <th>Products</th>
                       <th>Total</th>
@@ -101,18 +125,26 @@ function Orders() {
 
                   <tbody>
                     {orders.map((o) => (
-                      <tr key={o.id} className="order-row">
+                      <tr key={o.id}>
 
                         <td className="fw-bold text-primary">#{o.id}</td>
 
-                        <td className="fw-semibold">
-                          {o.customer || o.user?.name || "User"}
+                        {/* 🔥 DATE + LABEL */}
+                        <td>
+                          <div className="badge bg-secondary mb-1">
+                            {getDateLabel(o.createdAt)}
+                          </div>
+                          <div className="small">
+                            {new Date(o.createdAt || Date.now()).toLocaleTimeString("en-IN")}
+                          </div>
                         </td>
+
+                        <td>{o.customer || o.user?.name || "User"}</td>
 
                         <td>
                           {o.items.map((item, i) => (
-                            <div key={i} className="small text-muted product-item">
-                              • {item.name} × {item.qty}
+                            <div key={i}>
+                              {item.name} × {item.qty}
                             </div>
                           ))}
                         </td>
@@ -122,26 +154,13 @@ function Orders() {
                         </td>
 
                         <td>
-                          <span className={`badge px-3 py-2 ${
-                            o.paymentMethod === "Razorpay"
-                              ? "bg-primary"
-                              : "bg-success"
-                          }`}>
-                            {o.paymentMethod || "COD"}
+                          <span className="badge bg-primary">
+                            {o.paymentMethod}
                           </span>
                         </td>
 
                         <td>
                           <select
-                            className={`form-select fw-semibold status-select ${
-                              o.status === "Pending"
-                                ? "bg-warning text-dark"
-                                : o.status === "Processing"
-                                ? "bg-primary text-white"
-                                : o.status === "Out for Delivery"
-                                ? "bg-info text-dark"
-                                : "bg-success text-white"
-                            }`}
                             value={o.status}
                             onChange={(e) =>
                               updateStatus(o.id, e.target.value)
@@ -152,6 +171,26 @@ function Orders() {
                             <option>Out for Delivery</option>
                             <option>Delivered</option>
                           </select>
+
+                          {/* 🔥 TRACKING UI */}
+                          <div className="timeline mt-2">
+
+                            {["Pending", "Processing", "Out for Delivery", "Delivered"].map((step, i) => (
+                              <div key={i} className="timeline-step">
+
+                                <div className={`circle ${
+                                  getStep(o.status) > i ? "active" : ""
+                                }`}></div>
+
+                                <small>
+                                  {step}
+                                </small>
+
+                              </div>
+                            ))}
+
+                          </div>
+
                         </td>
 
                       </tr>
@@ -168,48 +207,27 @@ function Orders() {
 
       </div>
 
-      {/* 🔥 STYLES */}
       <style>{`
-        .modern-table {
-          border-radius: 16px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .timeline {
+          display: flex;
+          justify-content: space-between;
         }
 
-        thead {
-          background: #111;
-          color: white;
+        .timeline-step {
+          text-align: center;
+          flex: 1;
         }
 
-        .order-row {
-          transition: 0.3s;
+        .circle {
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          background: #ccc;
+          margin: auto;
         }
 
-        .order-row:hover {
-          background: #f1f3f5;
-          transform: scale(1.01);
-        }
-
-        .product-item {
-          transition: 0.2s;
-        }
-
-        .product-item:hover {
-          color: #198754;
-        }
-
-        .status-select {
-          border-radius: 10px;
-          border: none;
-          cursor: pointer;
-          transition: 0.2s;
-        }
-
-        .status-select:hover {
-          transform: scale(1.05);
-        }
-
-        .status-select:focus {
-          box-shadow: none;
+        .circle.active {
+          background: #198754;
         }
 
         .toast-msg {
@@ -218,18 +236,7 @@ function Orders() {
           right: 20px;
           background: #198754;
           color: white;
-          padding: 12px 18px;
-          border-radius: 8px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-          z-index: 9999;
-          animation: fadeInOut 2s ease;
-        }
-
-        @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(-10px); }
-          10% { opacity: 1; transform: translateY(0); }
-          90% { opacity: 1; }
-          100% { opacity: 0; transform: translateY(-10px); }
+          padding: 10px;
         }
       `}</style>
 
