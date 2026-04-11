@@ -61,7 +61,16 @@ function Navbar() {
     setShowDropdown(true);
   }, [search, products]);
 
-  // 🔥 BOOTSTRAP MENU OPEN/CLOSE → SCROLL CONTROL
+  // 🔥 MENU CLOSE FUNCTION (FIX)
+  const closeMenu = () => {
+    const nav = document.getElementById("navbarContent");
+    if (nav) {
+      nav.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+  };
+
+  // 🔥 BOOTSTRAP MENU CONTROL
   useEffect(() => {
     const nav = document.getElementById("navbarContent");
     if (!nav) return;
@@ -71,7 +80,7 @@ function Navbar() {
     };
 
     const handleHide = () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = ""; // FIX
     };
 
     nav.addEventListener("show.bs.collapse", handleShow);
@@ -83,13 +92,13 @@ function Navbar() {
     };
   }, []);
 
-  // 🔥 SCROLL → CLOSE MENU
+  // 🔥 SCROLL CLOSE FIX
   useEffect(() => {
     const handleScroll = () => {
       const nav = document.getElementById("navbarContent");
       if (nav && nav.classList.contains("show")) {
         nav.classList.remove("show");
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "";
       }
     };
 
@@ -97,7 +106,7 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🔥 OUTSIDE CLICK → CLOSE MENU
+  // 🔥 OUTSIDE CLICK FIX
   useEffect(() => {
     const handleClickOutside = (e) => {
       const nav = document.getElementById("navbarContent");
@@ -107,10 +116,11 @@ function Navbar() {
         nav &&
         nav.classList.contains("show") &&
         !nav.contains(e.target) &&
+        toggler &&
         !toggler.contains(e.target)
       ) {
         nav.classList.remove("show");
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "";
       }
     };
 
@@ -145,7 +155,7 @@ function Navbar() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div className="container-fluid">
 
-          <Link className="navbar-brand" to="/home">
+          <Link className="navbar-brand" to="/home" onClick={closeMenu}>
             AgroMart 🌱
           </Link>
 
@@ -185,16 +195,15 @@ function Navbar() {
             <ul className="navbar-nav ms-auto text-center">
 
               <li className="nav-item">
-                <Link className="nav-link" to="/home" data-bs-toggle="collapse" data-bs-target="#navbarContent">Home</Link>
+                <Link className="nav-link" to="/home" onClick={closeMenu}>Home</Link>
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link" to="/crops" data-bs-toggle="collapse" data-bs-target="#navbarContent">Crops</Link>
+                <Link className="nav-link" to="/crops" onClick={closeMenu}>Crops</Link>
               </li>
 
-              {/* CART */}
               <li className="nav-item position-relative">
-                <Link className="nav-link" to="/cart" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <Link className="nav-link" to="/cart" onClick={closeMenu}>
                   Cart 🛒
                   {cartCount > 0 && (
                     <span className="badge bg-danger position-absolute top-0 start-100 translate-middle">
@@ -207,10 +216,10 @@ function Navbar() {
               {!user ? (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/login" data-bs-toggle="collapse" data-bs-target="#navbarContent">Login</Link>
+                    <Link className="nav-link" to="/login" onClick={closeMenu}>Login</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/register" data-bs-toggle="collapse" data-bs-target="#navbarContent">Register</Link>
+                    <Link className="nav-link" to="/register" onClick={closeMenu}>Register</Link>
                   </li>
                 </>
               ) : (
@@ -225,11 +234,15 @@ function Navbar() {
                   <ul className="dropdown-menu dropdown-menu-end">
 
                     <li>
-                      <Link className="dropdown-item" to="/profile">Profile</Link>
+                      <Link className="dropdown-item" to="/profile" onClick={closeMenu}>
+                        Profile
+                      </Link>
                     </li>
 
                     <li>
-                      <Link className="dropdown-item" to="/corders">My Orders</Link>
+                      <Link className="dropdown-item" to="/corders" onClick={closeMenu}>
+                        My Orders
+                      </Link>
                     </li>
 
                     <li><hr className="dropdown-divider" /></li>
