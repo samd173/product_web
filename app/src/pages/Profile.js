@@ -4,14 +4,14 @@ function Profile() {
   const [user, setUser] = useState(null);
   const [editing, setEditing] = useState(false);
   const [toast, setToast] = useState("");
-  const [loading, setLoading] = useState(true); // 🔥 ADD
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("customer"));
-    const token = localStorage.getItem("token"); // 🔥 ADD
+    const token = localStorage.getItem("token");
 
     if (!u || !token) {
-      setLoading(false); // 🔥 ADD
+      setLoading(false);
       return;
     }
 
@@ -26,12 +26,12 @@ function Profile() {
       })
       .then(data => {
         setUser(data);
-        setLoading(false); // 🔥 ADD
+        setLoading(false);
       })
       .catch(() => {
         setToast("Failed to load profile ❌");
         setTimeout(() => setToast(""), 2000);
-        setLoading(false); // 🔥 ADD
+        setLoading(false);
       });
   }, []);
 
@@ -52,6 +52,13 @@ function Profile() {
   };
 
   const handleSave = async () => {
+    // ✅ SAFE CHECK (no crash)
+    if (!user?.id) {
+      setToast("User ID missing ❌");
+      setTimeout(() => setToast(""), 2000);
+      return;
+    }
+
     try {
       const res = await fetch(`https://backend-project-sa6b.onrender.com/user/${user.id}`, {
         method: "PUT",
@@ -90,7 +97,7 @@ function Profile() {
     }
   };
 
-  // 🔥 FIXED LOADING
+  // ✅ FIXED LOADING
   if (loading) return <h3 className="text-center mt-5">Loading...</h3>;
 
   return (
