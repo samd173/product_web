@@ -61,6 +61,63 @@ function Navbar() {
     setShowDropdown(true);
   }, [search, products]);
 
+  // 🔥 BOOTSTRAP MENU OPEN/CLOSE → SCROLL CONTROL
+  useEffect(() => {
+    const nav = document.getElementById("navbarContent");
+    if (!nav) return;
+
+    const handleShow = () => {
+      document.body.style.overflow = "hidden";
+    };
+
+    const handleHide = () => {
+      document.body.style.overflow = "auto";
+    };
+
+    nav.addEventListener("show.bs.collapse", handleShow);
+    nav.addEventListener("hide.bs.collapse", handleHide);
+
+    return () => {
+      nav.removeEventListener("show.bs.collapse", handleShow);
+      nav.removeEventListener("hide.bs.collapse", handleHide);
+    };
+  }, []);
+
+  // 🔥 SCROLL → CLOSE MENU
+  useEffect(() => {
+    const handleScroll = () => {
+      const nav = document.getElementById("navbarContent");
+      if (nav && nav.classList.contains("show")) {
+        nav.classList.remove("show");
+        document.body.style.overflow = "auto";
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // 🔥 OUTSIDE CLICK → CLOSE MENU
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const nav = document.getElementById("navbarContent");
+      const toggler = document.querySelector(".navbar-toggler");
+
+      if (
+        nav &&
+        nav.classList.contains("show") &&
+        !nav.contains(e.target) &&
+        !toggler.contains(e.target)
+      ) {
+        nav.classList.remove("show");
+        document.body.style.overflow = "auto";
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   const handleSelect = (name) => {
     setSearch("");
     setShowDropdown(false);
@@ -128,16 +185,16 @@ function Navbar() {
             <ul className="navbar-nav ms-auto text-center">
 
               <li className="nav-item">
-                <Link className="nav-link" to="/home">Home</Link>
+                <Link className="nav-link" to="/home" data-bs-toggle="collapse" data-bs-target="#navbarContent">Home</Link>
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link" to="/crops">Crops</Link>
+                <Link className="nav-link" to="/crops" data-bs-toggle="collapse" data-bs-target="#navbarContent">Crops</Link>
               </li>
 
               {/* CART */}
               <li className="nav-item position-relative">
-                <Link className="nav-link" to="/cart">
+                <Link className="nav-link" to="/cart" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                   Cart 🛒
                   {cartCount > 0 && (
                     <span className="badge bg-danger position-absolute top-0 start-100 translate-middle">
@@ -147,14 +204,13 @@ function Navbar() {
                 </Link>
               </li>
 
-              {/* 🔥 AUTH DROPDOWN */}
               {!user ? (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/login">Login</Link>
+                    <Link className="nav-link" to="/login" data-bs-toggle="collapse" data-bs-target="#navbarContent">Login</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/register">Register</Link>
+                    <Link className="nav-link" to="/register" data-bs-toggle="collapse" data-bs-target="#navbarContent">Register</Link>
                   </li>
                 </>
               ) : (
@@ -169,15 +225,11 @@ function Navbar() {
                   <ul className="dropdown-menu dropdown-menu-end">
 
                     <li>
-                      <Link className="dropdown-item" to="/profile">
-                        Profile
-                      </Link>
+                      <Link className="dropdown-item" to="/profile">Profile</Link>
                     </li>
 
                     <li>
-                      <Link className="dropdown-item" to="/corders">
-                       My Orders
-                      </Link>
+                      <Link className="dropdown-item" to="/corders">My Orders</Link>
                     </li>
 
                     <li><hr className="dropdown-divider" /></li>

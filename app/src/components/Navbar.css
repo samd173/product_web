@@ -40,3 +40,6 @@
     border-radius: 10px;
   }
 }
+#navbarContent {
+  z-index: 9999;
+}
