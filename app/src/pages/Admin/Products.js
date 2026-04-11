@@ -91,7 +91,7 @@ function Products() {
 
   const updateProduct = async () => {
     try {
-      await fetch(`https://backend-project-sa6b.onrender.com/${editProduct.id}`, {
+      await fetch(`https://backend-project-sa6b.onrender.com/products/${editProduct.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
