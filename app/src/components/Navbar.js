@@ -203,6 +203,19 @@ function Navbar() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
+              {showDropdown && suggestions.length > 0 && (
+  <div className="search-dropdown">
+    {suggestions.map((item) => (
+      <div
+        key={item.id}
+        className="search-item"
+        onClick={() => handleSelect(item.name)}
+      >
+        {item.name}
+      </div>
+    ))}
+  </div>
+)}
             </div>
 
             <ul className="navbar-nav ms-auto text-center">
