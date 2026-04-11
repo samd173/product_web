@@ -177,6 +177,19 @@ function Navbar() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+            {showDropdown && suggestions.length > 0 && (
+  <div className="search-dropdown">
+    {suggestions.map((item) => (
+      <div
+        key={item.id}
+        className="search-item"
+        onClick={() => handleSelect(item.name)}
+      >
+        {item.name}
+      </div>
+    ))}
+  </div>
+)}
           </div>
 
           <div className="collapse navbar-collapse bg-dark p-3 rounded" id="navbarContent">
