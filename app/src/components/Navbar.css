@@ -43,3 +43,21 @@
 #navbarContent {
   z-index: 9999;
 }
+.search-dropdown {
+  position: absolute;
+  top: 45px;
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  z-index: 9999; /* 🔥 important */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.search-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-item:hover {
+  background: #f1f3f5;
+}
