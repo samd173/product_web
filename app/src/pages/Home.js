@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ProductContext } from "../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [products, setProducts] = useState([]);
+  const { products } = useContext(ProductContext);
   const [current, setCurrent] = useState(0);
   const [cartRefresh, setCartRefresh] = useState(false);
   const [toast, setToast] = useState("");
@@ -21,14 +22,6 @@ function Home() {
       setCurrent((prev) => (prev + 1) % images.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
-
-  // 🔥 Load products (UNCHANGED)
-  useEffect(() => {
-    fetch("https://backend-project-sa6b.onrender.com/products")
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.log(err));
   }, []);
 
   // 🛒 Cart logic (UNCHANGED)

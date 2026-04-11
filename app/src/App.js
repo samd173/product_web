@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 
+// 🔥 ADD THIS
+import { ProductProvider } from "./context/ProductContext";
+
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -34,21 +37,17 @@ function Layout() {
 
   return (
     <>
-      {/* ✅ Navbar */}
       {!hideLayout && <Navbar />}
 
       <Routes>
 
-        {/* 🔁 DEFAULT REDIRECT (FIXED) */}
         <Route path="/" element={<Navigate to="/home" />} />
 
-        {/* 👤 USER ROUTES (PUBLIC) */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/crops" element={<Crops />} />
 
-        {/* 🔒 PROTECTED USER ROUTES */}
         <Route
           path="/cart"
           element={
@@ -85,10 +84,8 @@ function Layout() {
           }
         />
 
-        {/* 👑 ADMIN LOGIN */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* 🔒 PROTECTED ADMIN ROUTES */}
         <Route
           path="/admin/dashboard"
           element={
@@ -116,7 +113,6 @@ function Layout() {
           }
         />
 
-        {/* ❌ INVALID ROUTE */}
         <Route
           path="*"
           element={<h2 className="text-center mt-5">Page Not Found ❌</h2>}
@@ -124,7 +120,6 @@ function Layout() {
 
       </Routes>
 
-      {/* ✅ Footer */}
       {!hideLayout && <Footer />}
     </>
   );
@@ -133,9 +128,11 @@ function Layout() {
 // 🔥 MAIN APP
 function App() {
   return (
-    <BrowserRouter>
-      <Layout />
-    </BrowserRouter>
+    <ProductProvider> {/* 🔥 ONLY CHANGE */}
+      <BrowserRouter>
+        <Layout />
+      </BrowserRouter>
+    </ProductProvider>
   );
 }
 

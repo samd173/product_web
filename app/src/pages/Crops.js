@@ -1,8 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ProductContext } from "../context/ProductContext";
 
 function Crops() {
-  const [products, setProducts] = useState([]);
+  const { products } = useContext(ProductContext);
+ 
+  useEffect(() => {
+    if (products.length > 0){
+      setLoading(false);
+    }
+  },[products]);
+    
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState("");
@@ -14,17 +22,6 @@ function Crops() {
   const params = new URLSearchParams(location.search);
   const category = params.get("category");
   const search = params.get("search");
-
-  // 🔥 LOAD PRODUCTS (UNCHANGED)
-  useEffect(() => {
-    fetch("https://backend-project-sa6b.onrender.com/products")
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
 
   // 🔥 LOAD CART (UNCHANGED)
   useEffect(() => {

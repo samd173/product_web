@@ -220,7 +220,7 @@ function Products() {
 
                         <td>
                           <img
-                            src={p.image || "https://via.placeholder.com/50"}
+                            src={p.image}
                             alt=""
                             className="product-img"
                           />
