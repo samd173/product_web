@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 
+
 function Profile() {
   const [user, setUser] = useState(null);
   const [editing, setEditing] = useState(false);
   const [toast, setToast] = useState("");
-  const [loading, setLoading] = useState(true); // 🔥 ADD
 
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("customer"));
 
-    if (!u) {
-      setLoading(false); // 🔥 ADD
-      return;
-    }
+    if (!u) return;
 
     fetch(`https://backend-project-sa6b.onrender.com/user/email/${u.email}`, {
       headers: {
@@ -23,14 +20,10 @@ function Profile() {
         if (!res.ok) throw new Error();
         return res.json();
       })
-      .then(data => {
-        setUser(data);
-        setLoading(false); // 🔥 ADD
-      })
+      .then(data => setUser(data))
       .catch(() => {
         setToast("Failed to load profile ❌");
         setTimeout(() => setToast(""), 2000);
-        setLoading(false); // 🔥 ADD
       });
   }, []);
 
@@ -89,8 +82,7 @@ function Profile() {
     }
   };
 
-  // 🔥 FIXED LOADING
-  if (loading) return <h3 className="text-center mt-5">Loading...</h3>;
+  if (!user) return <h3 className="text-center mt-5">Loading...</h3>;
 
   return (
     <>
@@ -104,14 +96,14 @@ function Profile() {
           {/* HEADER */}
           <div className="text-center mb-3">
             <img
-              src={user?.image || "https://via.placeholder.com/120"}
+              src={user.image || "https://via.placeholder.com/120"}
               alt="profile"
               className="rounded-circle shadow"
               style={{ width: "100px", height: "100px", objectFit: "cover" }}
             />
 
-            <h4 className="mt-2 mb-0">{user?.name}</h4>
-            <small className="text-muted">{user?.email}</small>
+            <h4 className="mt-2 mb-0">{user.name}</h4>
+            <small className="text-muted">{user.email}</small>
           </div>
 
           {/* IMAGE UPLOAD */}
@@ -130,7 +122,7 @@ function Profile() {
             <input
               className="form-control mb-2"
               name="name"
-              value={user?.name || ""}
+              value={user.name || ""}
               disabled={!editing}
               onChange={handleChange}
             />
@@ -139,7 +131,7 @@ function Profile() {
             <input
               className="form-control mb-2"
               name="phone"
-              value={user?.phone || ""}
+              value={user.phone || ""}
               disabled={!editing}
               onChange={handleChange}
             />
@@ -148,7 +140,7 @@ function Profile() {
             <textarea
               className="form-control mb-3"
               name="address"
-              value={user?.address || ""}
+              value={user.address || ""}
               disabled={!editing}
               onChange={handleChange}
             />
@@ -175,6 +167,8 @@ function Profile() {
         </div>
 
       </div>
+
+     
 
       <style>{`
         .toast-msg {
